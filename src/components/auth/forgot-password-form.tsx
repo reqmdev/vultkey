@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormStatus } from "@/components/auth/form-status";
-import { BotProtection, getBotProtectionTokens } from "@/components/auth/bot-protection";
+import { BotProtection, getBotProtectionTokens, RecaptchaNotice } from "@/components/auth/bot-protection";
 
 export function ForgotPasswordForm() {
   const [status, setStatus] = useState<{ message: string; ok: boolean } | null>(null);
@@ -69,6 +69,8 @@ export function ForgotPasswordForm() {
           Girişe dön
         </Link>
       </p>
+
+      <RecaptchaNotice />
     </form>
   );
 }

@@ -101,7 +101,6 @@ export function BotProtection({ action, resetSignal, onTurnstileTokenChange }: {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<string | null>(null);
   const hasTurnstile = Boolean(turnstileSiteKey);
-  const hasRecaptcha = Boolean(recaptchaSiteKey);
 
   function resetTurnstile() {
     if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
@@ -138,12 +137,21 @@ export function BotProtection({ action, resetSignal, onTurnstileTokenChange }: {
     resetTurnstile();
   }, [resetSignal]);
 
-  if (!hasTurnstile && !hasRecaptcha) return null;
+  if (!hasTurnstile) return null;
 
   return (
-    <div className="space-y-2">
-      {hasTurnstile ? <div ref={containerRef} className="min-h-[65px]" /> : null}
-      {hasRecaptcha ? <p className="text-xs leading-5 text-muted-foreground">Bu form Google reCAPTCHA v3 ile korunur.</p> : null}
+    <div className="flex min-h-[65px] justify-center">
+      <div ref={containerRef} />
     </div>
+  );
+}
+
+export function RecaptchaNotice() {
+  if (!recaptchaSiteKey) return null;
+
+  return (
+    <p className="border-t border-border/70 pt-4 text-center text-[11px] leading-5 text-muted-foreground">
+      Bu oturum işlemi, kötüye kullanım ve otomatik denemeleri azaltmak için Google reCAPTCHA v3 ile arka planda doğrulanır. Koruma sessiz çalışır ve yalnızca işlem güvenliğini artırmaya yönelik risk sinyallerini değerlendirir.
+    </p>
   );
 }

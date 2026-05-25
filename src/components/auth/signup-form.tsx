@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormStatus } from "@/components/auth/form-status";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
-import { BotProtection, getBotProtectionTokens } from "@/components/auth/bot-protection";
+import { BotProtection, getBotProtectionTokens, RecaptchaNotice } from "@/components/auth/bot-protection";
 
 export function SignupForm() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -91,6 +91,8 @@ export function SignupForm() {
           Giriş yap
         </Link>
       </p>
+
+      <RecaptchaNotice />
     </form>
   );
 }
