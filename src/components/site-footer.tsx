@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BetaBadge, LogoMark } from "@/components/logo";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FaDiscord, FaGithub, FaXTwitter } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa6";
 
 type SiteLocale = "tr" | "en";
 
@@ -22,9 +22,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { href: "#", label: "GitHub", icon: FaGithub },
-  { href: "#", label: "Discord", icon: FaDiscord },
-  { href: "#", label: "X", icon: FaXTwitter }
+  { href: "https://github.com/reqmdev/vultkey", label: "GitHub", icon: FaGithub }
 ];
 
 const languageOptions = {
@@ -122,7 +120,7 @@ export function SiteFooter({ className }: { className?: string }) {
             {socialLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <a key={link.label} href={link.href} className="inline-flex size-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={link.label}>
+                <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="inline-flex size-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={link.label}>
                   <Icon className="size-4" />
                 </a>
               );

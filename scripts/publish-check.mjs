@@ -51,8 +51,6 @@ function hasRequiredIgnore(pattern) {
 }
 
 function matchesSensitiveTrackedPath(path) {
-  if (path === ".env.example") return false;
-
   return (
     path === ".env" ||
     path.startsWith(".env.") ||
@@ -90,7 +88,7 @@ function collectFiles(directory, files = []) {
 }
 
 function scanForObviousSecrets() {
-  const allowed = new Set([".env.example", "README.md", "docs/SECURITY_RUNBOOK.md"]);
+  const allowed = new Set(["README.md"]);
   const sourceExtensions = new Set([".ts", ".tsx", ".js", ".mjs", ".json", ".sql", ".ps1", ".md"]);
   const obviousSecretPatterns = [
     /postgresql:\/\/[^\s"']+:[^\s"']+@/i,
@@ -114,7 +112,6 @@ if (!exists(".gitignore")) fail(".gitignore is missing.");
 
 for (const pattern of [
   ".env*",
-  "!.env.example",
   ".next/",
   "node_modules/",
   ".vercel/",
@@ -137,7 +134,6 @@ for (const path of [".env.local", "supabase/.temp", "backups", "node_modules", "
 const packageJson = JSON.parse(read("package.json"));
 if (!packageJson.license) fail("package.json is missing a license field.");
 if (!exists("LICENSE")) fail("LICENSE file is missing.");
-if (!exists("SECURITY.md")) fail("SECURITY.md is missing.");
 if (!exists("CONTRIBUTING.md")) fail("CONTRIBUTING.md is missing.");
 
 if (isGitRepo()) {

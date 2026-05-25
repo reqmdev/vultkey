@@ -37,7 +37,6 @@ assert(includes(".gitignore", "backups/"), ".gitignore must ignore database back
 assert(includes(".gitignore", "*.tsbuildinfo"), ".gitignore must ignore TypeScript build info.");
 assert(includes("package.json", "publish:check"), "package.json is missing publish:check.");
 assert(existsSync(join(root, "LICENSE")), "LICENSE file is missing.");
-assert(existsSync(join(root, "SECURITY.md")), "SECURITY.md is missing.");
 
 assert(
   existingSources(["next.config.ts", "src/middleware.ts", "src/proxy.ts"]).some((source) => source.includes("Content-Security-Policy") && source.includes("nonce-")),

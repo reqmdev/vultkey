@@ -31,6 +31,8 @@ import { FaGithub } from "react-icons/fa6";
 
 export const dynamic = "force-dynamic";
 
+const githubUrl = "https://github.com/reqmdev/vultkey";
+
 type HomeKeyRow = {
   id: string;
   title: string;
@@ -261,10 +263,10 @@ export default async function EnglishHomePage() {
               </h1>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
                 <BetaBadge className="h-5" />
-                <span className="inline-flex h-5 items-center gap-1.5 rounded border border-primary/20 bg-primary/10 px-2 font-medium text-primary">
+                <a href={githubUrl} target="_blank" rel="noreferrer" className="inline-flex h-5 items-center gap-1.5 rounded border border-primary/20 bg-primary/10 px-2 font-medium text-primary transition-colors hover:border-primary/35 hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <FaGithub className="size-3.5" />
                   Open source
-                </span>
+                </a>
                 <span>Code, security choices, and the self-host path can be reviewed.</span>
               </div>
               <p className="mt-5 max-w-3xl bg-card/35 text-base leading-7 text-muted-foreground">
@@ -418,11 +420,11 @@ export default async function EnglishHomePage() {
             <ScrollReveal className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
               <div className="vultkey-branding-card grid gap-8 rounded-md border border-border p-5 sm:p-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
                 <div className="max-w-xl">
-                  <div className="vultkey-section-label flex flex-wrap items-center gap-2 text-sm font-medium">
+                  <a href={githubUrl} target="_blank" rel="noreferrer" className="vultkey-section-label inline-flex flex-wrap items-center gap-2 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     <FaGithub className="size-4" />
                     Open source
                     <BetaBadge className="vultkey-section-badge h-5" />
-                  </div>
+                  </a>
                   <h2 className="mt-4 max-w-2xl text-[clamp(2.1rem,3.8vw,4.2rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-balance">
                     Open beta, open code.
                   </h2>
@@ -470,7 +472,7 @@ export default async function EnglishHomePage() {
                   </Button>
                 ) : null}
                 <Button asChild variant="outline" size="lg" className="h-12 px-6 text-base">
-                  <a href="#">
+                  <a href={githubUrl} target="_blank" rel="noreferrer">
                     <FaGithub className="size-5" />
                     GitHub / Open source
                   </a>

@@ -6,11 +6,10 @@ Thanks for your interest in Vultkey.
 
 ```bash
 pnpm install
-cp .env.example .env.local
 pnpm dev
 ```
 
-Fill `.env.local` with your own Supabase, Upstash, Turnstile, and reCAPTCHA values. Do not commit `.env.local`.
+Create a local `.env.local` with your own Supabase, Upstash, Turnstile, and reCAPTCHA values. Do not commit `.env.local`.
 
 ## Development Checks
 
