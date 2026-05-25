@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow } from "next/font/google";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/providers";
 import { themeCookieName } from "@/lib/theme-script";
 import "./globals.css";
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="tr" className={`${sans.variable}${theme === "dark" ? " dark" : ""}`} style={{ colorScheme: theme }} suppressHydrationWarning>
       <body>
         <Providers initialTheme={theme}>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
