@@ -1,0 +1,45 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js
+.next/
+out/
+
+# production
+build/
+dist/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# env
+.env*
+!.env.example
+
+# vercel
+.vercel/
+
+# supabase local/link state
+supabase/.temp/
+
+# backups and database dumps
+backups/
+*.dump
+*.bak
+*.backup
+
+# misc
+.DS_Store
+*.pem
+coverage/
+*.log
+*.tsbuildinfo
+.turbo/
+
+# local exported brand source copies; committed assets live under public/brand/
+Vultkey_*_transparent.png

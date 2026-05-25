@@ -1,0 +1,309 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0.986 0.004 84;
+    --foreground: 0.205 0.014 48;
+    --card: 0.998 0.003 84;
+    --card-foreground: 0.205 0.014 48;
+    --popover: 0.998 0.003 84;
+    --popover-foreground: 0.205 0.014 48;
+    --primary: 0.54 0.14 32;
+    --primary-foreground: 0.986 0.004 84;
+    --secondary: 0.945 0.006 76;
+    --secondary-foreground: 0.25 0.014 48;
+    --muted: 0.93 0.006 76;
+    --muted-foreground: 0.47 0.013 48;
+    --accent: 0.91 0.026 54;
+    --accent-foreground: 0.255 0.016 48;
+    --destructive: 0.54 0.19 25;
+    --destructive-foreground: 0.985 0.01 78;
+    --border: 0.855 0.008 72;
+    --input: 0.8 0.01 72;
+    --ring: 0.54 0.14 32;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0.135 0.01 42;
+    --foreground: 0.9 0.012 48;
+    --card: 0.195 0.012 42;
+    --card-foreground: 0.9 0.012 48;
+    --popover: 0.195 0.012 42;
+    --popover-foreground: 0.9 0.012 48;
+    --primary: 0.64 0.15 32;
+    --primary-foreground: 0.13 0.01 42;
+    --secondary: 0.245 0.014 42;
+    --secondary-foreground: 0.88 0.012 48;
+    --muted: 0.27 0.012 42;
+    --muted-foreground: 0.66 0.012 48;
+    --accent: 0.36 0.06 28;
+    --accent-foreground: 0.9 0.012 48;
+    --destructive: 0.62 0.18 24;
+    --destructive-foreground: 0.94 0.025 78;
+    --border: 0.335 0.012 42;
+    --input: 0.37 0.012 42;
+    --ring: 0.64 0.15 32;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    text-rendering: geometricPrecision;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+
+  body::selection {
+    background: oklch(var(--primary) / 0.28);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid oklch(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .vultkey-gradient-wallpaper {
+    position: absolute;
+    inset: 0 0 auto;
+    height: min(760px, 92vh);
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 16%, oklch(var(--primary) / 0.2), transparent 30%),
+      radial-gradient(circle at 82% 10%, oklch(var(--accent) / 0.22), transparent 28%),
+      linear-gradient(135deg, oklch(var(--background)), oklch(var(--muted) / 0.68));
+    mask-image: linear-gradient(to bottom, black 0%, black 68%, transparent 100%);
+  }
+
+  .vultkey-auth-field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 12%, oklch(var(--primary) / 0.1), transparent 30%),
+      radial-gradient(circle at 86% 72%, oklch(var(--accent) / 0.48), transparent 28%),
+      linear-gradient(180deg, oklch(var(--background)), oklch(0.958 0.008 76));
+  }
+
+  .dark .vultkey-auth-field {
+    background:
+      radial-gradient(circle at 18% 12%, oklch(var(--primary) / 0.14), transparent 30%),
+      radial-gradient(circle at 86% 72%, oklch(var(--accent) / 0.1), transparent 28%),
+      linear-gradient(180deg, oklch(var(--background)), oklch(0.15 0.01 42));
+  }
+
+  .vultkey-auth-field::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(oklch(var(--primary) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--primary) / 0.028) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 78%);
+  }
+
+  .vultkey-branding-field {
+    position: relative;
+    isolation: isolate;
+    --vultkey-section-accent: var(--primary);
+    --vultkey-section-surface: var(--card);
+    background:
+      radial-gradient(circle at 14% 6%, oklch(var(--primary) / 0.075), transparent 28%),
+      radial-gradient(circle at 88% 38%, oklch(var(--accent) / 0.55), transparent 30%),
+      linear-gradient(180deg, oklch(0.986 0.004 84), oklch(0.958 0.008 76));
+  }
+
+  .dark .vultkey-branding-field {
+    background:
+      radial-gradient(circle at 14% 6%, oklch(var(--primary) / 0.1), transparent 28%),
+      radial-gradient(circle at 88% 38%, oklch(var(--accent) / 0.075), transparent 30%),
+      linear-gradient(180deg, oklch(0.17 0.012 42), oklch(0.145 0.01 42));
+  }
+
+  .vultkey-branding-field::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(oklch(var(--primary) / 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--primary) / 0.022) 1px, transparent 1px);
+    background-size: 76px 76px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 82%, transparent 100%);
+  }
+
+  .vultkey-branding-field::after {
+    content: "";
+    position: absolute;
+    inset: 18% -18% auto;
+    z-index: 0;
+    height: 420px;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, oklch(var(--primary) / 0.052), transparent 70%);
+  }
+
+  .vultkey-branding-field > section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vultkey-tone-amber {
+    --vultkey-section-accent: var(--primary);
+    --vultkey-section-surface: 0.998 0.003 84;
+  }
+
+  .vultkey-tone-brass {
+    --vultkey-section-accent: 0.48 0.095 52;
+    --vultkey-section-surface: 0.988 0.006 78;
+  }
+
+  .vultkey-tone-copper {
+    --vultkey-section-accent: 0.52 0.11 28;
+    --vultkey-section-surface: 0.99 0.006 68;
+  }
+
+  .vultkey-tone-umber {
+    --vultkey-section-accent: 0.46 0.065 58;
+    --vultkey-section-surface: 0.985 0.006 74;
+  }
+
+  .vultkey-tone-stone {
+    --vultkey-section-accent: 0.44 0.025 68;
+    --vultkey-section-surface: 0.982 0.005 80;
+  }
+
+  .dark .vultkey-tone-amber {
+    --vultkey-section-accent: var(--primary);
+    --vultkey-section-surface: 0.225 0.014 42;
+  }
+
+  .dark .vultkey-tone-brass {
+    --vultkey-section-accent: 0.66 0.105 42;
+    --vultkey-section-surface: 0.218 0.014 44;
+  }
+
+  .dark .vultkey-tone-copper {
+    --vultkey-section-accent: 0.64 0.105 28;
+    --vultkey-section-surface: 0.218 0.014 34;
+  }
+
+  .dark .vultkey-tone-umber {
+    --vultkey-section-accent: 0.63 0.08 52;
+    --vultkey-section-surface: 0.214 0.013 48;
+  }
+
+  .dark .vultkey-tone-stone {
+    --vultkey-section-accent: 0.69 0.045 44;
+    --vultkey-section-surface: 0.212 0.011 42;
+  }
+
+  .vultkey-section-label,
+  .vultkey-section-text {
+    color: oklch(var(--vultkey-section-accent, var(--primary)));
+  }
+
+  .vultkey-section-text-muted {
+    color: oklch(var(--vultkey-section-accent, var(--primary)) / 0.72);
+  }
+
+  .vultkey-section-badge {
+    border-color: oklch(var(--vultkey-section-accent, var(--primary)) / 0.24);
+    background: oklch(var(--vultkey-section-accent, var(--primary)) / 0.12);
+    color: oklch(var(--vultkey-section-accent, var(--primary)));
+  }
+
+  .vultkey-branding-card {
+    background:
+      radial-gradient(circle at 12% 0%, oklch(var(--vultkey-section-accent, var(--primary)) / 0.055), transparent 34%),
+      linear-gradient(135deg, oklch(var(--vultkey-section-surface, var(--card))), oklch(var(--card) / 0.9));
+    border-color: oklch(var(--vultkey-section-accent, var(--primary)) / 0.18);
+  }
+
+  .dark .vultkey-branding-card {
+    background:
+      radial-gradient(circle at 12% 0%, oklch(var(--vultkey-section-accent, var(--primary)) / 0.075), transparent 34%),
+      linear-gradient(135deg, oklch(var(--vultkey-section-surface, var(--card)) / 0.82), oklch(var(--card) / 0.52));
+    border-color: oklch(var(--vultkey-section-accent, var(--primary)) / 0.12);
+  }
+
+  .vultkey-icon-mark {
+    border-color: oklch(var(--vultkey-section-accent, var(--primary)) / 0.18);
+    background: oklch(var(--vultkey-section-accent, var(--primary)) / 0.075);
+    color: oklch(var(--vultkey-section-accent, var(--primary)));
+    box-shadow: inset 0 1px 0 oklch(var(--foreground) / 0.07);
+  }
+
+  .vultkey-final-cta {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 80% 22%, oklch(var(--primary) / 0.085), transparent 30%),
+      linear-gradient(180deg, oklch(0.985 0.004 84) 0%, oklch(0.958 0.008 76) 55%, oklch(0.986 0.004 84) 100%);
+  }
+
+  .dark .vultkey-final-cta {
+    background:
+      radial-gradient(circle at 80% 22%, oklch(var(--primary) / 0.12), transparent 30%),
+      linear-gradient(180deg, oklch(0.145 0.01 42) 0%, oklch(0.18 0.012 42) 22%, oklch(0.165 0.01 42) 100%);
+  }
+
+  .vultkey-final-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, oklch(0.986 0.004 84) 0%, transparent 34%),
+      linear-gradient(oklch(var(--primary) / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--primary) / 0.035) 1px, transparent 1px);
+    background-size: auto, 76px 76px, 76px 76px;
+    mask-image: linear-gradient(to bottom, black 0%, black 68%, transparent 100%);
+  }
+
+  .dark .vultkey-final-cta::before {
+    background:
+      linear-gradient(to bottom, oklch(0.145 0.01 42) 0%, transparent 34%),
+      linear-gradient(oklch(var(--primary) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--primary) / 0.025) 1px, transparent 1px);
+    background-size: auto, 76px 76px, 76px 76px;
+  }
+
+  .vultkey-final-cta > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

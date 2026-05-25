@@ -1,0 +1,266 @@
+create index if not exists public_key_claims_link_fingerprint_idx
+on public.public_key_claims (link_id, ip_hash, user_agent_hash)
+where ip_hash is not null
+  and user_agent_hash is not null
+  and status in ('reserved', 'redeemed');
+
+create or replace function public.reserve_public_key(
+  p_token_hash text,
+  p_claim_token_hash text,
+  p_recipient_email text,
+  p_recipient_label text,
+  p_ip_hash text,
+  p_user_agent_hash text,
+  p_key_id uuid default null
+)
+returns table (
+  ok boolean,
+  message text,
+  link_id uuid,
+  claim_id uuid,
+  key_id uuid,
+  user_id uuid,
+  key_title text,
+  platform text,
+  encrypted_key text,
+  encryption_iv text,
+  encryption_tag text,
+  can_reveal boolean,
+  can_confirm_redeemed boolean,
+  can_copy boolean
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_link public.public_key_links%rowtype;
+  v_key public.keys%rowtype;
+  v_claim_id uuid;
+  v_permissions jsonb;
+  v_can_reserve boolean;
+  v_can_reveal boolean;
+  v_can_confirm boolean;
+  v_can_copy boolean;
+  v_max_per_recipient integer;
+begin
+  select * into v_link
+  from public.public_key_links l
+  where l.token_hash = p_token_hash
+  for update of l;
+
+  if not found then
+    ok := false;
+    message := 'Bağlantı bulunamadı.';
+    return next;
+    return;
+  end if;
+
+  v_permissions := v_link.permission_config;
+  v_can_reserve := coalesce((v_permissions ->> 'canReserve')::boolean, true);
+  v_can_reveal := coalesce((v_permissions ->> 'canRevealAfterReserve')::boolean, true);
+  v_can_confirm := coalesce((v_permissions ->> 'canConfirmRedeemed')::boolean, true);
+  v_can_copy := coalesce((v_permissions ->> 'canCopy')::boolean, true);
+  v_max_per_recipient := coalesce((v_permissions ->> 'maxClaimsPerRecipient')::integer, 1);
+
+  if not v_can_reserve then
+    ok := false;
+    message := 'Bu linkte kod alma izni kapalı.';
+    return next;
+    return;
+  end if;
+
+  if v_link.status <> 'active' or v_link.disabled_at is not null then
+    ok := false;
+    message := 'Bu bağlantı artık geçerli değil.';
+    return next;
+    return;
+  end if;
+
+  if v_link.expires_at is not null and v_link.expires_at <= now() then
+    ok := false;
+    message := 'Bu bağlantının süresi dolmuş.';
+    return next;
+    return;
+  end if;
+
+  if v_link.claim_count >= v_link.max_claims then
+    ok := false;
+    message := 'Bu bağlantıdaki kodlar alınmış.';
+    return next;
+    return;
+  end if;
+
+  if v_link.access_mode = 'email_allowlist' then
+    if p_recipient_email is null or not exists (
+      select 1 from public.public_key_link_emails e
+      where e.link_id = v_link.id and e.email = lower(p_recipient_email)
+    ) then
+      ok := false;
+      message := 'Bu bağlantı için e-posta erişimi yok.';
+      return next;
+      return;
+    end if;
+  end if;
+
+  if v_link.require_email_verification and p_recipient_email is null then
+    ok := false;
+    message := 'Bu link için e-posta gerekli.';
+    return next;
+    return;
+  end if;
+
+  if p_recipient_email is not null and v_max_per_recipient > 0 then
+    if (
+      select count(*)
+      from public.public_key_claims c
+      where c.link_id = v_link.id
+        and c.recipient_email = lower(p_recipient_email)
+        and c.status in ('reserved', 'redeemed')
+    ) >= v_max_per_recipient then
+      ok := false;
+      message := 'Bu e-posta bu linkten daha fazla kod alamaz.';
+      return next;
+      return;
+    end if;
+  end if;
+
+  if v_max_per_recipient > 0 and p_ip_hash is not null and p_user_agent_hash is not null then
+    if (
+      select count(*)
+      from public.public_key_claims c
+      where c.link_id = v_link.id
+        and c.ip_hash = p_ip_hash
+        and c.user_agent_hash = p_user_agent_hash
+        and c.status in ('reserved', 'redeemed')
+    ) >= v_max_per_recipient then
+      ok := false;
+      message := 'Bu cihaz veya ağ bu linkten daha fazla kod alamaz.';
+      return next;
+      return;
+    end if;
+  end if;
+
+  if v_link.link_type = 'single' then
+    select k.* into v_key
+    from public.keys k
+    where k.id = v_link.key_id
+      and k.user_id = v_link.user_id
+      and k.status = 'available'
+    for update of k skip locked;
+  elsif p_key_id is not null then
+    with recursive category_scope(id) as (
+      select v_link.category_id
+      union all
+      select c.id
+      from public.categories c
+      join category_scope s on c.parent_id = s.id
+      where c.user_id = v_link.user_id and v_link.include_subcategories
+    )
+    select k.* into v_key
+    from public.keys k
+    where k.id = p_key_id
+      and k.user_id = v_link.user_id
+      and k.status = 'available'
+      and k.category_id in (select s.id from category_scope s)
+    for update of k skip locked;
+  elsif v_link.include_subcategories then
+    with recursive category_scope(id) as (
+      select v_link.category_id
+      union all
+      select c.id
+      from public.categories c
+      join category_scope s on c.parent_id = s.id
+      where c.user_id = v_link.user_id
+    )
+    select k.* into v_key
+    from public.keys k
+    where k.user_id = v_link.user_id
+      and k.status = 'available'
+      and k.category_id in (select s.id from category_scope s)
+    order by k.updated_at asc
+    limit 1
+    for update of k skip locked;
+  else
+    select k.* into v_key
+    from public.keys k
+    where k.user_id = v_link.user_id
+      and k.status = 'available'
+      and k.category_id = v_link.category_id
+    order by k.updated_at asc
+    limit 1
+    for update of k skip locked;
+  end if;
+
+  if v_key.id is null then
+    ok := false;
+    message := 'Bu bağlantıda alınabilir kod kalmadı.';
+    return next;
+    return;
+  end if;
+
+  update public.keys k
+  set status = 'reserved'::public.key_status,
+      redeemed_at = null,
+      updated_at = now()
+  where k.id = v_key.id and k.user_id = v_link.user_id;
+
+  insert into public.public_key_claims (
+    link_id,
+    key_id,
+    user_id,
+    claim_token_hash,
+    status,
+    recipient_email,
+    recipient_label,
+    ip_hash,
+    user_agent_hash
+  )
+  values (
+    v_link.id,
+    v_key.id,
+    v_link.user_id,
+    p_claim_token_hash,
+    'reserved',
+    nullif(lower(coalesce(p_recipient_email, '')), ''),
+    nullif(p_recipient_label, ''),
+    p_ip_hash,
+    p_user_agent_hash
+  )
+  returning public_key_claims.id into v_claim_id;
+
+  update public.public_key_links l
+  set claim_count = l.claim_count + 1,
+      updated_at = now()
+  where l.id = v_link.id;
+
+  insert into public.audit_logs (user_id, event_type, entity_type, entity_id, ip_hash, user_agent_hash, metadata)
+  values (
+    v_link.user_id,
+    'public_link.reserved',
+    'key',
+    v_key.id,
+    p_ip_hash,
+    p_user_agent_hash,
+    jsonb_build_object('linkId', v_link.id, 'claimId', v_claim_id, 'recipientEmail', p_recipient_email, 'recipientLabel', p_recipient_label, 'viewMode', v_link.view_mode)
+  );
+
+  ok := true;
+  message := case when v_can_reveal then 'Kod alındı ve sana ayrıldı.' else 'Kod sana ayrıldı.' end;
+  link_id := v_link.id;
+  claim_id := v_claim_id;
+  key_id := v_key.id;
+  user_id := v_link.user_id;
+  key_title := v_key.title;
+  platform := v_key.platform;
+  encrypted_key := case when v_can_reveal then v_key.encrypted_key else null end;
+  encryption_iv := case when v_can_reveal then v_key.encryption_iv else null end;
+  encryption_tag := case when v_can_reveal then v_key.encryption_tag else null end;
+  can_reveal := v_can_reveal;
+  can_confirm_redeemed := v_can_confirm;
+  can_copy := v_can_copy;
+  return next;
+end;
+$$;
+
+grant execute on function public.reserve_public_key(text, text, text, text, text, text, uuid) to anon, authenticated;
