@@ -1,42 +1,42 @@
 # Vultkey
 
-Vultkey, dijital keyleri, lisans kodlarını, API anahtarlarını, kuponları, hediye kartlarını ve oyun kodlarını tek bir güvenli kasada toplamak için geliştirilmiş açık kaynaklı bir üründür.
+Vultkey is an open-source product developed to consolidate digital keys, license codes, API keys, coupons, gift cards, and game codes into a single secure vault.
 
-Dağınık notlar, tablolar, mesaj geçmişleri ve paylaşım linkleri yerine, her kaydın nerede durduğunu, hangi durumda olduğunu ve kime gönderildiğini takip edebileceğin düzenli bir çalışma alanı sunar.
+Instead of scattered notes, spreadsheets, message histories, and sharing links, it offers an organized workspace where you can track where each entry is located, its status, and who it was sent to.
 
-## Ne İşe Yarar?
+## What Does It Do?
 
-Vultkey, özellikle dijital ürün, oyun keyi, lisans, kampanya kodu veya erişim bilgisi yöneten kişiler ve ekipler için tasarlanmıştır. Amaç sadece key saklamak değil, keyin yaşam döngüsünü kontrol altında tutmaktır.
+Vultkey is designed specifically for individuals and teams managing digital products, game keys, licenses, promo codes, or access credentials. The goal is not just to store keys, but to keep the key’s lifecycle under control.
 
-- Keyleri ve kodları merkezi bir kasada toplar.
-- Kayıtları kategori, etiket, platform, durum ve son kullanım tarihiyle düzenler.
-- Hazır, ayrılmış, kullanılmış ve arşivlenmiş kayıtları ayrı takip eder.
-- Tekil key veya liste paylaşımı için kontrollü public linkler oluşturur.
-- Paylaşım sonrasında hangi kaydın ne zaman talep edildiğini izlenebilir hale getirir.
-- Hesap, paylaşım ve kritik işlemler için audit kayıtları tutar.
+- Centralizes keys and codes in a single vault.
+- Organizes records by category, tag, platform, status, and expiration date.
+- Tracks ready, reserved, used, and archived records separately.
+- Creates controlled public links for sharing individual keys or lists.
+- Enables tracking of which record was requested and when after sharing.
+- Maintains audit logs for account, sharing, and critical operations.
 
-## Güvenlik Yaklaşımı
+## Security Approach
 
-Vultkey, hassas key ve kod materyalini düz metin olarak saklamamak üzere tasarlanmıştır. Kasaya eklenen hassas içerikler şifrelenir; doğrulama, karşılaştırma ve public link akışlarında ise ham değerleri doğrudan kullanmak yerine güvenli hash ve fingerprint mekanizmaları tercih edilir.
+Vultkey is designed not to store sensitive keys and code materials in plain text. Sensitive content added to the vault is encrypted; for verification, comparison, and public link flows, secure hash and fingerprint mechanisms are preferred over using raw values directly.
 
-Bu yaklaşım, Vultkey'in yalnızca bir listeleme aracı değil, gizli dijital varlıkları kontrollü şekilde saklamak ve dağıtmak için hazırlanmış bir kasa olmasını sağlar.
+This approach ensures that Vultkey is not merely a listing tool, but a vault specifically designed to securely store and distribute confidential digital assets.
 
-## Açık Kaynak
+## Open Source
 
-Vultkey açık kaynaklıdır. Şifreleme yaklaşımı, veri modeli, public link mantığı, erişim kontrolleri ve claim limitleri herkes tarafından incelenebilir.
+Vultkey is open source. Its encryption approach, data model, public link logic, access controls, and claim limits are available for anyone to review.
 
-Kaynak kod:
+Source code:
 
 https://github.com/reqmdev/vultkey
 
-## Kullanım Senaryoları
+## Use Cases
 
-- Oyun keylerini ve lisansları düzenli saklamak.
-- Kampanya, çekiliş veya müşteri teslimlerinde key dağıtımını takip etmek.
-- API anahtarları, kuponlar ve dijital erişim kodlarını tek yerde yönetmek.
-- Tek kullanımlık veya sınırlı erişimli public linklerle kod paylaşmak.
-- Self-host edilebilir, denetlenebilir ve açık kaynaklı bir dijital key kasası kullanmak.
+- Securely storing game keys and licenses.
+- Tracking key distribution for campaigns, giveaways, or customer deliveries.
+- Managing API keys, coupons, and digital access codes in one place.
+- Share codes via one-time or limited-access public links.
+- Use a self-hostable, auditable, and open-source digital key vault.
 
-## Durum
+## Status
 
-Vultkey beta aşamasındadır. Ürün; güvenli saklama, düzenli envanter, kontrollü paylaşım ve açık kaynak denetlenebilirlik üzerine odaklanır.
+Vultkey is in the beta phase. The product focuses on secure storage, organized inventory, controlled sharing, and open-source auditability.
