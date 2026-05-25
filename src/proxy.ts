@@ -1,11 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isInvalidRefreshTokenError, isSupabaseAuthCookie, supabaseAuthCookieName } from "@/lib/supabase/auth-session";
-import { getSupabaseConfig } from "@/lib/supabase/config";
 import type { Database } from "@/types/database";
 
 const isDev = process.env.NODE_ENV !== "production";
-const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin : "https://*.supabase.co";
 const authSessionVersion = process.env.VULTKEY_AUTH_SESSION_VERSION ?? "20260525-db-reset";
 const authSessionVersionCookie = "vultkey-auth-session-version";
 const authCookieBaseOptions = {
@@ -21,7 +19,26 @@ function createNonce() {
   return btoa(String.fromCharCode(...bytes));
 }
 
+function readSupabaseProxyConfig() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !publishableKey) return null;
+
+  try {
+    return { url: new URL(url).toString(), publishableKey };
+  } catch {
+    return null;
+  }
+}
+
+function supabaseConnectOrigin() {
+  const config = readSupabaseProxyConfig();
+  return config ? new URL(config.url).origin : "https://*.supabase.co";
+}
+
 function buildContentSecurityPolicy(nonce: string) {
+  const supabaseOrigin = supabaseConnectOrigin();
   const directives = [
     "default-src 'self'",
     "base-uri 'self'",
@@ -54,8 +71,7 @@ function serializedRequestCookies(request: NextRequest) {
 export async function proxy(request: NextRequest) {
   const nonce = createNonce();
   const contentSecurityPolicy = buildContentSecurityPolicy(nonce);
-  const { url, publishableKey } = getSupabaseConfig();
-  const authCookieName = supabaseAuthCookieName(url);
+  const supabaseConfig = readSupabaseProxyConfig();
 
   function createResponse() {
     const requestHeaders = new Headers(request.headers);
@@ -82,6 +98,11 @@ export async function proxy(request: NextRequest) {
   }
 
   let response = createResponse();
+
+  if (!supabaseConfig) return response;
+
+  const { url, publishableKey } = supabaseConfig;
+  const authCookieName = supabaseAuthCookieName(url);
 
   function writeSessionVersionCookie() {
     request.cookies.set(authSessionVersionCookie, authSessionVersion);
