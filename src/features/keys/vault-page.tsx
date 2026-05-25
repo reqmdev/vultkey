@@ -922,7 +922,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
 
   return (
     <div className="space-y-5">
-      <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Kasa</h1>
           <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Keyleri maskeli tut, kategoriyle düzenle ve gerektiğinde güvenli paylaş.</p>
@@ -935,6 +935,10 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
             ))}
           </div>
         </div>
+        <Button onClick={openCreate} className="h-10 shrink-0 sm:mt-0">
+          <Plus className="size-4" />
+          Key/kod ekle
+        </Button>
       </div>
 
       <div className="rounded-md border border-border bg-card shadow-panel">
