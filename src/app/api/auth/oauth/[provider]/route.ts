@@ -9,7 +9,13 @@ function isSupportedProvider(value: string): value is SupportedOAuthProvider {
 }
 
 function appOrigin(request: NextRequest) {
-  return process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (configuredUrl) return new URL(configuredUrl).origin;
+
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercelUrl) return `https://${vercelUrl.replace(/^https?:\/\//, "")}`;
+
+  return request.nextUrl.origin;
 }
 
 function loginRedirect(request: NextRequest, authError: string, next: string) {
