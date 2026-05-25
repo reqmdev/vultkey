@@ -151,7 +151,7 @@ export function RecaptchaNotice() {
 
   return (
     <p className="border-t border-border/70 pt-4 text-center text-[11px] leading-5 text-muted-foreground">
-      Bu oturum işlemi, kötüye kullanım ve otomatik denemeleri azaltmak için Google reCAPTCHA v3 ile arka planda doğrulanır. Koruma sessiz çalışır ve yalnızca işlem güvenliğini artırmaya yönelik risk sinyallerini değerlendirir.
+      Bu form, otomatik denemeleri azaltmak için Google reCAPTCHA v3 ile korunur.
     </p>
   );
 }
