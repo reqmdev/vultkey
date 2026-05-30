@@ -4,8 +4,8 @@ import { AppShell } from "@/components/dashboard/app-shell";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function EnglishDashboardLayout({ children }: { children: ReactNode }) {
   const { user } = await requireUser();
 
-  return <AppShell email={user.email ?? "account"} locale="tr">{children}</AppShell>;
+  return <AppShell email={user.email ?? "account"} locale="en">{children}</AppShell>;
 }

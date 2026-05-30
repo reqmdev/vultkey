@@ -5,18 +5,25 @@ import { usePathname } from "next/navigation";
 import { History, KeyRound, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { href: "/dashboard", label: "Kasa", icon: KeyRound },
-  { href: "/dashboard/audit", label: "Kayıtlar", icon: History },
-  { href: "/dashboard/settings", label: "Ayarlar", icon: Settings }
-];
+const navItems = {
+  tr: [
+    { href: "/dashboard", label: "Kasa", icon: KeyRound },
+    { href: "/dashboard/audit", label: "Kayıtlar", icon: History },
+    { href: "/dashboard/settings", label: "Ayarlar", icon: Settings }
+  ],
+  en: [
+    { href: "/en/dashboard", label: "Vault", icon: KeyRound },
+    { href: "/en/dashboard/audit", label: "Audit", icon: History },
+    { href: "/en/dashboard/settings", label: "Settings", icon: Settings }
+  ]
+};
 
-export function DashboardNav({ compact = false }: { compact?: boolean }) {
+export function DashboardNav({ compact = false, locale = "tr" }: { compact?: boolean; locale?: "tr" | "en" }) {
   const pathname = usePathname();
 
   return (
     <nav className={cn("flex gap-1", compact ? "overflow-x-auto no-scrollbar" : "flex-col")}>
-      {navItems.map((item) => {
+      {navItems[locale].map((item) => {
         const Icon = item.icon;
         const active = pathname === item.href;
 

@@ -31,6 +31,7 @@ type VaultPageProps = {
   keys: VaultKey[];
   categories: VaultCategory[];
   tags: VaultTag[];
+  locale?: "tr" | "en";
 };
 
 const keyDragType = "application/vnd.vultkey.key-id";
@@ -402,7 +403,12 @@ function TagPill({ tag }: { tag: VaultTag }) {
   );
 }
 
-export function VaultPage({ keys, categories, tags }: VaultPageProps) {
+export function VaultPage({ keys, categories, tags, locale = "tr" }: VaultPageProps) {
+  const isEnglish = locale === "en";
+  const copy = isEnglish
+    ? { title: "Vault", description: "Keep keys masked, organize them with categories, and share safely when needed.", search: "Search keys, services, tags, or categories", allStatuses: "All statuses", noFilterTitle: "No codes match this filter.", noFilterText: "Simplify the search or clear filters.", clearFilters: "Clear filters", noVisible: "No visible records yet. Start by adding a category or code.", category: "Category", newCategory: "New category name", subcategoryUnder: "subcategory under", addCategory: "Add category", tags: "Tags", newTag: "New tag", addTag: "Add tag", noTags: "No tags yet.", ready: "Ready", claimed: "Claimed", total: "Total", delete: "Delete", show: "Show", hide: "Hide", actions: "Actions", keyActions: "Code actions", edit: "Edit", publish: "Publish as link", copyLink: "Copy publish link", unpublish: "Unpublish", secureCopy: "Secure copy", markClaimed: "Mark claimed", markUsed: "Mark used", markReady: "Mark ready", live: "Live", closed: "Closed" }
+    : { title: "Kasa", description: "Keyleri maskeli tut, kategoriyle düzenle ve gerektiğinde güvenli paylaş.", search: "Key, servis, etiket veya kategori ara", allStatuses: "Tüm durumlar", noFilterTitle: "Filtreyle eşleşen kod yok.", noFilterText: "Aramayı sadeleştir veya filtreleri temizle.", clearFilters: "Filtreleri temizle", noVisible: "Henüz görünür kayıt yok. Kategori veya kod ekleyerek başlayabilirsin.", category: "Kategori", newCategory: "Yeni kategori adı", subcategoryUnder: "altında alt kategori", addCategory: "Kategori ekle", tags: "Etiketler", newTag: "Yeni etiket", addTag: "Etiket ekle", noTags: "Henüz etiket yok.", ready: "Hazır", claimed: "Alınan", total: "Toplam", delete: "Sil", show: "Göster", hide: "Gizle", actions: "İşlemler", keyActions: "Kod işlemleri", edit: "Düzenle", publish: "Link olarak yayınla", copyLink: "Yayın linkini kopyala", unpublish: "Yayından kaldır", secureCopy: "Güvenli kopyala", markClaimed: "Alındı yap", markUsed: "Kullanıldı yap", markReady: "Hazır yap", live: "Yayında", closed: "Kapalı" };
+  const localizedStatusLabels = isEnglish ? { available: "Ready", reserved: "Claimed", redeemed: "Used", archived: "Archived" } : statusLabels;
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<KeyStatus | "all">("all");
@@ -828,10 +834,10 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
           {publicLink ? (
             <Badge variant="outline" className={cn("hidden shrink-0 gap-1 border text-[11px] lg:inline-flex", publicLinkActive ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border-border bg-muted/40 text-muted-foreground")}>
               <Link2 className="size-3" />
-              {publicLinkActive ? "Yayında" : "Kapalı"}
+              {publicLinkActive ? copy.live : copy.closed}
             </Badge>
           ) : null}
-          {!isRedeemed ? <Badge className={cn("hidden shrink-0 border text-[11px] sm:inline-flex", statusTone[key.status])}>{statusLabels[key.status]}</Badge> : null}
+          {!isRedeemed ? <Badge className={cn("hidden shrink-0 border text-[11px] sm:inline-flex", statusTone[key.status])}>{localizedStatusLabels[key.status]}</Badge> : null}
           {isRedeemed ? (
             <Button
               type="button"
@@ -842,12 +848,12 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
               disabled={isDeleting}
             >
               <Trash2 className="size-3.5" />
-              <span className="hidden sm:inline">Sil</span>
+              <span className="hidden sm:inline">{copy.delete}</span>
             </Button>
           ) : null}
           <Button type="button" variant="ghost" size="icon" className="size-8" onClick={() => revealSecret(key.id)} disabled={revealPending}>
             {secret ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-            <span className="sr-only">{secret ? "Gizle" : "Göster"}</span>
+            <span className="sr-only">{secret ? copy.hide : copy.show}</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -857,11 +863,11 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
                 className="size-8 border border-transparent hover:border-border hover:bg-muted data-[state=open]:border-border data-[state=open]:bg-muted"
               >
                 <MoreHorizontal className="size-4" />
-                <span className="sr-only">İşlemler</span>
+                <span className="sr-only">{copy.actions}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44 p-1.5">
-              <DropdownMenuLabel className="px-2 py-1.5 text-sm font-semibold">Kod işlemleri</DropdownMenuLabel>
+              <DropdownMenuLabel className="px-2 py-1.5 text-sm font-semibold">{copy.keyActions}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => openEdit(key)}>
                 <PencilLine className="size-4" />
@@ -915,17 +921,17 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
   const available = keys.filter((key) => key.status === "available").length;
   const attention = keys.filter((key) => key.status === "reserved").length;
   const vaultStats = [
-    { label: "Toplam", value: keys.length },
-    { label: "Hazır", value: available },
-    { label: "Alınan", value: attention }
+    { label: copy.total, value: keys.length },
+    { label: copy.ready, value: available },
+    { label: copy.claimed, value: attention }
   ];
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Kasa</h1>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Keyleri maskeli tut, kategoriyle düzenle ve gerektiğinde güvenli paylaş.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{copy.title}</h1>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">{copy.description}</p>
           <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
             {vaultStats.map(({ label, value }) => (
               <span key={label} className="inline-flex h-8 items-center gap-2 rounded-md border border-border bg-card px-2.5">
@@ -959,7 +965,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
               id="new-category"
               value={newCategoryName}
               onChange={(event) => setNewCategoryName(event.target.value)}
-              placeholder={newCategoryParentPath ? `${newCategoryParentPath} altında alt kategori` : "Yeni kategori adı"}
+              placeholder={newCategoryParentPath ? (isEnglish ? `${copy.subcategoryUnder} ${newCategoryParentPath}` : `${newCategoryParentPath} ${copy.subcategoryUnder}`) : copy.newCategory}
               className="h-9 min-w-0 flex-1 md:max-w-xl"
             />
             <div className="flex flex-wrap items-center gap-2 md:ml-auto md:justify-end">
@@ -987,7 +993,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
         <div className="flex flex-col gap-3 border-b border-border p-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-lg">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Key, servis, etiket veya kategori ara" className="h-9 pl-9" />
+            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={copy.search} className="h-9 pl-9" />
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <select
@@ -995,8 +1001,8 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
               onChange={(event) => setStatus(event.target.value as KeyStatus | "all")}
               className="h-9 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm transition-colors hover:border-ring/55 focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
             >
-              <option value="all">Tüm durumlar</option>
-              {Object.entries(statusLabels).map(([value, label]) => (
+              <option value="all">{copy.allStatuses}</option>
+              {Object.entries(localizedStatusLabels).map(([value, label]) => (
                 <option key={value} value={value}>
                   {label}
                 </option>
@@ -1012,8 +1018,8 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
         ) : filteredKeys.length === 0 && hasListFilter ? (
           <div className="flex min-h-80 items-center justify-center px-6 text-center">
             <div>
-              <p className="font-medium">Filtreyle eşleşen kod yok.</p>
-              <p className="mt-2 text-sm text-muted-foreground">Aramayı sadeleştir veya filtreleri temizle.</p>
+              <p className="font-medium">{copy.noFilterTitle}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{copy.noFilterText}</p>
               <Button
                 className="mt-5"
                 variant="outline"
@@ -1022,7 +1028,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
                   setStatus("all");
                 }}
               >
-                Filtreleri temizle
+                {copy.clearFilters}
               </Button>
             </div>
           </div>
@@ -1054,7 +1060,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
             {rootKeys.map((key) => renderKeyRow(key, 0))}
             {categoryTree.length === 0 && rootKeys.length === 0 ? (
               <div className="rounded-md border border-dashed border-border bg-background p-8 text-center text-sm text-muted-foreground">
-                Henüz görünür kayıt yok. Kategori veya kod ekleyerek başlayabilirsin.
+                {copy.noVisible}
               </div>
             ) : null}
           </div>
@@ -1064,7 +1070,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
           <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/40">
             <span className="inline-flex items-center gap-2">
               <Tag className="size-4 text-muted-foreground" />
-              Etiketler
+              {copy.tags}
             </span>
             <span className="inline-flex items-center gap-2 text-xs font-normal text-muted-foreground">
               {tags.length}
@@ -1080,10 +1086,10 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
                   createTag();
                 }}
               >
-                <Input id="new-tag" value={newTagName} onChange={(event) => setNewTagName(event.target.value)} placeholder="Yeni etiket" className="h-8 w-36 text-xs" />
+                <Input id="new-tag" value={newTagName} onChange={(event) => setNewTagName(event.target.value)} placeholder={copy.newTag} className="h-8 w-36 text-xs" />
                 <Button type="submit" size="icon" variant="outline" className="size-8" disabled={isCreatingTag || newTagName.trim().length === 0}>
                   <Plus className="size-3.5" />
-                  <span className="sr-only">Etiket ekle</span>
+                  <span className="sr-only">{copy.addTag}</span>
                 </Button>
               </form>
               {tags.length > 0 ? (
@@ -1093,7 +1099,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
                   ))}
                 </div>
               ) : (
-                <span className="border-t border-border pt-2 text-xs text-muted-foreground sm:border-l sm:border-t-0 sm:pl-2 sm:pt-0">Henüz etiket yok.</span>
+                <span className="border-t border-border pt-2 text-xs text-muted-foreground sm:border-l sm:border-t-0 sm:pl-2 sm:pt-0">{copy.noTags}</span>
               )}
             </div>
           </div>
@@ -1101,6 +1107,7 @@ export function VaultPage({ keys, categories, tags }: VaultPageProps) {
       </div>
 
       <KeyEditorDialog
+        locale={locale}
         open={editorOpen}
         onOpenChange={setEditorOpen}
         keyRecord={editingKey}

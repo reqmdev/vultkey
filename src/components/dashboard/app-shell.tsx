@@ -9,7 +9,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
-export function AppShell({ children, email }: { children: ReactNode; email: string }) {
+export function AppShell({ children, email, locale = "tr" }: { children: ReactNode; email: string; locale?: "tr" | "en" }) {
+  const copy = locale === "en" ? { settings: "Settings", logout: "Sign out", settingsHref: "/en/dashboard/settings" } : { settings: "Ayarlar", logout: "Çıkış yap", settingsHref: "/dashboard/settings" };
   return (
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 hidden w-60 border-r border-border bg-background px-3 py-4 md:flex md:flex-col">
@@ -17,15 +18,15 @@ export function AppShell({ children, email }: { children: ReactNode; email: stri
           <Logo />
         </div>
         <div className="mt-5">
-          <DashboardNav />
+          <DashboardNav locale={locale} />
         </div>
         <div className="mt-auto flex items-center gap-1 border-t border-border pt-3">
-          <Link href="/dashboard/settings" className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+          <Link href={copy.settingsHref} className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
             <UserRound className="size-4 shrink-0" />
             <span className="truncate">{email}</span>
           </Link>
           <form action={logoutAction}>
-            <Button type="submit" variant="ghost" size="icon" className="size-9 text-muted-foreground" aria-label="Çıkış yap" title="Çıkış yap">
+            <Button type="submit" variant="ghost" size="icon" className="size-9 text-muted-foreground" aria-label={copy.logout} title={copy.logout}>
               <LogOut className="size-4" />
             </Button>
           </form>
@@ -40,20 +41,20 @@ export function AppShell({ children, email }: { children: ReactNode; email: stri
             <Logo />
             <div className="flex items-center gap-1">
               <ThemeToggle />
-              <Button asChild variant="ghost" size="icon" aria-label="Ayarlar">
-                <Link href="/dashboard/settings">
+              <Button asChild variant="ghost" size="icon" aria-label={copy.settings}>
+                <Link href={copy.settingsHref}>
                   <UserRound className="size-4" />
                 </Link>
               </Button>
               <form action={logoutAction}>
-                <Button type="submit" variant="ghost" size="icon" aria-label="Çıkış yap">
+                <Button type="submit" variant="ghost" size="icon" aria-label={copy.logout}>
                   <LogOut className="size-4" />
                 </Button>
               </form>
             </div>
           </div>
           <div className="border-t border-border px-3 py-2">
-            <DashboardNav compact />
+            <DashboardNav compact locale={locale} />
           </div>
         </header>
 

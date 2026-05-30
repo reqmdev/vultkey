@@ -36,6 +36,7 @@ function currentLocale(pathname: string): SiteLocale {
 
 function localizedPath(pathname: string, locale: SiteLocale) {
   const authRoutes = new Set(["login", "signup", "forgot-password", "reset-password"]);
+  const dashboardRoutes = new Set(["dashboard", "dashboard/audit", "dashboard/settings"]);
 
   if (pathname === "/" || pathname === "") return `/${locale}`;
   if (pathname === "/privacy") return `/${locale}/privacy`;
@@ -44,12 +45,12 @@ function localizedPath(pathname: string, locale: SiteLocale) {
   if (pathname === "/en") return locale === "en" ? "/en" : "/tr";
   if (pathname.startsWith("/en/")) {
     const route = pathname.slice(4);
-    if (authRoutes.has(route)) return locale === "en" ? pathname : `/${route}`;
+    if (authRoutes.has(route) || dashboardRoutes.has(route)) return locale === "en" ? pathname : `/${route}`;
     return locale === "en" ? pathname : `/tr/${route}`;
   }
   if (pathname.startsWith("/tr/")) return locale === "tr" ? pathname : `/en/${pathname.slice(4)}`;
   const rootRoute = pathname.slice(1);
-  if (authRoutes.has(rootRoute)) return locale === "tr" ? pathname : `/en/${rootRoute}`;
+  if (authRoutes.has(rootRoute) || dashboardRoutes.has(rootRoute)) return locale === "tr" ? pathname : `/en/${rootRoute}`;
   return `/${locale}`;
 }
 

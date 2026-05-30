@@ -6,7 +6,10 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const pageLabels: Record<string, string> = {
   "/dashboard": "Kasa",
   "/dashboard/audit": "Kayıtlar",
-  "/dashboard/settings": "Ayarlar"
+  "/dashboard/settings": "Ayarlar",
+  "/en/dashboard": "Vault",
+  "/en/dashboard/audit": "Audit",
+  "/en/dashboard/settings": "Settings"
 };
 
 export function DashboardTopbar() {

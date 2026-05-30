@@ -92,7 +92,8 @@ export function KeyEditorDialog({
   keyRecord,
   initialCategoryId = null,
   categories,
-  tags
+  tags,
+  locale = "tr"
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -100,7 +101,11 @@ export function KeyEditorDialog({
   initialCategoryId?: string | null;
   categories: VaultCategory[];
   tags: VaultTag[];
+  locale?: "tr" | "en";
 }) {
+  const labels = locale === "en"
+    ? { editTitle: "Edit key/code", createTitle: "Add new key/code", description: "The raw key/code is sent to the server only during this action, encrypted with AES-GCM, and never stored as plain text.", title: "Title", titlePlaceholder: "OpenAI API credit, Windows license, discount coupon", raw: "Key / code", emptyRaw: "Leave blank if you do not want to change it", rawHelpEdit: "List view only shows the mask.", rawHelpPaste: "You can paste multiple keys or codes on separate lines.", platform: "Type / platform", custom: "Custom", customPlatform: "Custom platform", platformName: "Platform name", status: "Status", category: "Category", noCategory: "No category / root", expires: "Expiration", source: "Source", sourcePlaceholder: "Purchase source, customer, campaign", notes: "Notes", notesPlaceholder: "Activation, usage, or delivery notes", tags: "Tags", noTags: "No tags yet. You can add them quickly from the tags area.", cancel: "Cancel", update: "Update", save: "Save" }
+    : { editTitle: "Key/kod düzenle", createTitle: "Yeni key/kod ekle", description: "Ham key/kod yalnızca bu işlem sırasında sunucuya gider, AES-GCM ile şifrelenir ve düz metin olarak saklanmaz.", title: "Başlık", titlePlaceholder: "OpenAI API kredisi, Windows lisansı, indirim kuponu", raw: "Key / kod", emptyRaw: "Değiştirmeyeceksen boş bırak", rawHelpEdit: "Liste görünümü sadece maskeyi gösterir.", rawHelpPaste: "Birden fazla keyi veya kodu alt alta yapıştırabilirsin.", platform: "Tür / platform", custom: "Özel", customPlatform: "Özel platform", platformName: "Platform adı", status: "Durum", category: "Kategori", noCategory: "Kategorisiz / en dış", expires: "Son kullanım", source: "Kaynak", sourcePlaceholder: "Satın alma yeri, müşteri, kampanya", notes: "Not", notesPlaceholder: "Aktivasyon, kullanım veya teslim notları", tags: "Etiketler", noTags: "Henüz etiket yok. Etiketler sayfasından hızlıca ekleyebilirsin.", cancel: "Vazgeç", update: "Güncelle", save: "Kaydet" };
   const [isPending, startTransition] = useTransition();
   const form = useForm<KeyFormValues>({
     resolver: zodResolver(keyFormSchema),
@@ -182,9 +187,9 @@ export function KeyEditorDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="border-b border-border bg-popover p-5">
             <DialogHeader>
-              <DialogTitle>{isEditing ? "Key/kod düzenle" : "Yeni key/kod ekle"}</DialogTitle>
+              <DialogTitle>{isEditing ? labels.editTitle : labels.createTitle}</DialogTitle>
               <DialogDescription>
-                Ham key/kod yalnızca bu işlem sırasında sunucuya gider, AES-GCM ile şifrelenir ve düz metin olarak saklanmaz.
+                {labels.description}
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -192,15 +197,15 @@ export function KeyEditorDialog({
           <div className="space-y-5 p-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="title">Başlık</Label>
-                <Input id="title" placeholder="OpenAI API kredisi, Windows lisansı, indirim kuponu" {...form.register("title")} />
+                <Label htmlFor="title">{labels.title}</Label>
+                <Input id="title" placeholder={labels.titlePlaceholder} {...form.register("title")} />
                 <p className="text-xs text-destructive">{form.formState.errors.title?.message}</p>
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="rawKey">Key / kod</Label>
+                <Label htmlFor="rawKey">{labels.raw}</Label>
                 <Textarea
                   id="rawKey"
-                  placeholder={isEditing ? "Değiştirmeyeceksen boş bırak" : "AAAAA-BBBBB-CCCCC\nDDDDD-EEEEE-FFFFF"}
+                  placeholder={isEditing ? labels.emptyRaw : "AAAAA-BBBBB-CCCCC\nDDDDD-EEEEE-FFFFF"}
                   autoComplete="off"
                   spellCheck={false}
                   className="min-h-24 font-mono"
@@ -208,15 +213,15 @@ export function KeyEditorDialog({
                 />
                 <p className="text-xs text-muted-foreground">
                   {isEditing
-                    ? "Liste görünümü sadece maskeyi gösterir."
+                    ? labels.rawHelpEdit
                     : parsedRawKeys.length > 1
                       ? `${parsedRawKeys.length} key/kod algılandı. Hepsi aynı başlık, kategori ve etiketlerle kaydedilir.`
-                      : "Birden fazla keyi veya kodu alt alta yapıştırabilirsin."}
+                      : labels.rawHelpPaste}
                 </p>
                 <p className="text-xs text-destructive">{form.formState.errors.rawKey?.message}</p>
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <Label>Tür / platform</Label>
+                <Label>{labels.platform}</Label>
                 <input type="hidden" {...form.register("platform")} />
                 <div className="space-y-3 rounded-md border border-border bg-background/40 p-3">
                   {platformGroups.map((group) => (
@@ -256,14 +261,14 @@ export function KeyEditorDialog({
                     )}
                   >
                     <PlatformLogo platform={usesCustomPlatform ? selectedPlatform : "other"} className="size-5 rounded-sm" />
-                    Özel
+                    {labels.custom}
                   </button>
                   {usesCustomPlatform ? (
                     <Input
-                      aria-label="Özel platform"
+                      aria-label="{labels.custom} platform"
                       value={selectedPlatform}
                       onChange={(event) => form.setValue("platform", event.target.value, { shouldDirty: true, shouldValidate: true })}
-                      placeholder="Platform adı"
+                      placeholder={labels.platformName}
                       className="h-9"
                     />
                   ) : null}
@@ -271,7 +276,7 @@ export function KeyEditorDialog({
                 <p className="text-xs text-destructive">{form.formState.errors.platform?.message}</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">Durum</Label>
+                <Label htmlFor="status">{labels.status}</Label>
                 <select
                   id="status"
                   className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors hover:border-ring/55 focus-visible:ring-2 focus-visible:ring-ring"
@@ -285,13 +290,13 @@ export function KeyEditorDialog({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="categoryId">Kategori</Label>
+                <Label htmlFor="categoryId">{labels.category}</Label>
                 <select
                   id="categoryId"
                   className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors hover:border-ring/55 focus-visible:ring-2 focus-visible:ring-ring"
                   {...form.register("categoryId")}
                 >
-                  <option value="">Kategorisiz / en dış</option>
+                  <option value="">{labels.noCategory}</option>
                   {categoryOptions.map((category) => (
                     <option key={category.id} value={category.id}>
                       {`${"  ".repeat(category.depth)}${category.depth > 0 ? "- " : ""}${category.name}`}
@@ -300,21 +305,21 @@ export function KeyEditorDialog({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="expiresAt">Son kullanım</Label>
+                <Label htmlFor="expiresAt">{labels.expires}</Label>
                 <Input id="expiresAt" type="date" {...form.register("expiresAt")} />
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="source">Kaynak</Label>
-                <Input id="source" placeholder="Satın alma yeri, müşteri, kampanya" {...form.register("source")} />
+                <Label htmlFor="source">{labels.source}</Label>
+                <Input id="source" placeholder={labels.sourcePlaceholder} {...form.register("source")} />
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="notes">Not</Label>
-                <Textarea id="notes" placeholder="Aktivasyon, kullanım veya teslim notları" {...form.register("notes")} />
+                <Label htmlFor="notes">{labels.notes}</Label>
+                <Textarea id="notes" placeholder={labels.notesPlaceholder} {...form.register("notes")} />
               </div>
             </div>
 
             <div className="space-y-3">
-              <Label>Etiketler</Label>
+              <Label>{labels.tags}</Label>
               {tags.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => {
@@ -336,7 +341,7 @@ export function KeyEditorDialog({
                 </div>
               ) : (
                 <p className="rounded-md border border-dashed border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-                  Henüz etiket yok. Etiketler sayfasından hızlıca ekleyebilirsin.
+                  {labels.noTags}
                 </p>
               )}
             </div>
@@ -355,11 +360,11 @@ export function KeyEditorDialog({
 
           <DialogFooter className="border-t border-border bg-popover p-5">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-              Vazgeç
+              {labels.cancel}
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? <Loader2 className="animate-spin" /> : null}
-              {isEditing ? "Güncelle" : "Kaydet"}
+              {isEditing ? labels.update : labels.save}
             </Button>
           </DialogFooter>
         </form>

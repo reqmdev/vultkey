@@ -6,14 +6,20 @@ import { FaDiscord, FaGoogle } from "react-icons/fa6";
 import { FormStatus } from "@/components/auth/form-status";
 import { Button } from "@/components/ui/button";
 
-const providerLabels: Record<string, string> = {
+const providerLabels = {
+  tr: { email: "E-posta / şifre", unknown: "Bilinmiyor" },
+  en: { email: "Email / password", unknown: "Unknown" }
+};
+
+const fallbackProviderLabels: Record<string, string> = {
   email: "E-posta / şifre",
   google: "Google",
   discord: "Discord"
 };
 
-function providerLabel(provider: string) {
-  return providerLabels[provider] ?? provider;
+function providerLabel(provider: string, locale: "tr" | "en") {
+  if (provider === "email") return providerLabels[locale].email;
+  return fallbackProviderLabels[provider] ?? provider;
 }
 
 function ProviderIcon({ provider }: { provider: string }) {
@@ -22,11 +28,14 @@ function ProviderIcon({ provider }: { provider: string }) {
   return <Mail className="size-3.5" />;
 }
 
-export function PasswordLinkPanel({ email, providers }: { email: string | null; providers: string[] }) {
+export function PasswordLinkPanel({ email, providers, locale = "tr" }: { email: string | null; providers: string[]; locale?: "tr" | "en" }) {
   const [status, setStatus] = useState<{ message: string; ok: boolean } | null>(null);
   const [isPending, startTransition] = useTransition();
   const hasPasswordProvider = providers.includes("email");
-  const buttonText = hasPasswordProvider ? "Şifre sıfırlama bağlantısı gönder" : "Şifre belirleme bağlantısı gönder";
+  const copy = locale === "en"
+    ? { reset: "Send password reset link", set: "Send password setup link", failed: "Password link could not be sent.", active: "Password sign-in is active.", add: "Send an email link to add a password.", target: "Target", noEmail: "No email" }
+    : { reset: "Şifre sıfırlama bağlantısı gönder", set: "Şifre belirleme bağlantısı gönder", failed: "Şifre bağlantısı gönderilemedi.", active: "Şifre girişi aktif.", add: "Şifre eklemek için e-posta bağlantısı gönder.", target: "Hedef", noEmail: "E-posta yok" };
+  const buttonText = hasPasswordProvider ? copy.reset : copy.set;
 
   function sendPasswordLink() {
     setStatus(null);
@@ -36,7 +45,7 @@ export function PasswordLinkPanel({ email, providers }: { email: string | null; 
         const result = (await response.json()) as { ok: boolean; message: string };
         setStatus({ message: result.message, ok: result.ok });
       } catch {
-        setStatus({ message: "Şifre bağlantısı gönderilemedi.", ok: false });
+        setStatus({ message: copy.failed, ok: false });
       }
     });
   }
@@ -47,14 +56,14 @@ export function PasswordLinkPanel({ email, providers }: { email: string | null; 
         {(providers.length > 0 ? providers : ["unknown"]).map((provider) => (
           <span key={provider} className="inline-flex h-8 items-center gap-2 rounded-md border border-border bg-background px-2.5 text-xs font-medium text-foreground">
             <ProviderIcon provider={provider} />
-            {provider === "unknown" ? "Bilinmiyor" : providerLabel(provider)}
+            {provider === "unknown" ? providerLabels[locale].unknown : providerLabel(provider, locale)}
           </span>
         ))}
       </div>
 
       <div className="text-sm leading-6 text-muted-foreground">
-        <p>{hasPasswordProvider ? "Şifre girişi aktif." : "Şifre eklemek için e-posta bağlantısı gönder."}</p>
-        <p className="break-words">Hedef: <span className="font-medium text-foreground">{email ?? "E-posta yok"}</span></p>
+        <p>{hasPasswordProvider ? copy.active : copy.add}</p>
+        <p className="break-words">{copy.target}: <span className="font-medium text-foreground">{email ?? copy.noEmail}</span></p>
       </div>
 
       <FormStatus message={status?.message ?? null} ok={status?.ok} />
