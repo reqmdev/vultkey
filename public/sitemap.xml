@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://vultkey.vercel.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url><loc>https://vultkey.vercel.app/en</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/tr</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/privacy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/terms</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/en/privacy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/en/terms</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/tr/privacy</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vultkey.vercel.app/tr/terms</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+</urlset>

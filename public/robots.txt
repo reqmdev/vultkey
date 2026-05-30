@@ -1,0 +1,22 @@
+User-Agent: *
+Allow: /
+Allow: /en
+Allow: /tr
+Allow: /privacy
+Allow: /terms
+Allow: /en/privacy
+Allow: /en/terms
+Allow: /tr/privacy
+Allow: /tr/terms
+Disallow: /dashboard
+Disallow: /account
+Disallow: /settings
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /auth
+Disallow: /api
+Disallow: /k
+
+Sitemap: https://vultkey.vercel.app/sitemap.xml

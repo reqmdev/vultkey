@@ -35,13 +35,21 @@ function currentLocale(pathname: string): SiteLocale {
 }
 
 function localizedPath(pathname: string, locale: SiteLocale) {
+  const authRoutes = new Set(["login", "signup", "forgot-password", "reset-password"]);
+
   if (pathname === "/" || pathname === "") return `/${locale}`;
   if (pathname === "/privacy") return `/${locale}/privacy`;
   if (pathname === "/terms") return `/${locale}/terms`;
   if (pathname === "/tr") return locale === "tr" ? "/tr" : "/en";
   if (pathname === "/en") return locale === "en" ? "/en" : "/tr";
+  if (pathname.startsWith("/en/")) {
+    const route = pathname.slice(4);
+    if (authRoutes.has(route)) return locale === "en" ? pathname : `/${route}`;
+    return locale === "en" ? pathname : `/tr/${route}`;
+  }
   if (pathname.startsWith("/tr/")) return locale === "tr" ? pathname : `/en/${pathname.slice(4)}`;
-  if (pathname.startsWith("/en/")) return locale === "en" ? pathname : `/tr/${pathname.slice(4)}`;
+  const rootRoute = pathname.slice(1);
+  if (authRoutes.has(rootRoute)) return locale === "tr" ? pathname : `/en/${rootRoute}`;
   return `/${locale}`;
 }
 

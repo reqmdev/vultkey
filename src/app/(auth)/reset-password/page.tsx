@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function ResetPasswordPage() {
   return (
     <AuthCard title="Yeni şifre belirle" description="Bu şifreyle Google veya Discord olmadan da hesabına giriş yapabilirsin.">
-      <ResetPasswordForm />
+      <ResetPasswordForm locale="tr" />
     </AuthCard>
   );
 }

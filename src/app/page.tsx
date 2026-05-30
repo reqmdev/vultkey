@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Archive,
@@ -30,6 +31,16 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { FaGithub } from "react-icons/fa6";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Ana Sayfa",
+  description:
+    "Vultkey ile oyun, yazılım ve dijital ürün keylerinizi tek yerde saklayın; durumlarını takip edin ve gerektiğinde kontrollü bağlantılarla paylaşın.",
+  alternates: {
+    canonical: "/"
+  }
+};
+
 
 const githubUrl = "https://github.com/reqmdev/vultkey";
 
@@ -270,7 +281,7 @@ export default async function HomePage() {
                 <span>Kod, güvenlik kararları ve self-host yolu incelenebilir.</span>
               </div>
               <p className="mt-5 max-w-3xl bg-card/35 text-base leading-7 text-muted-foreground">
-                Lisans anahtarları, API keyleri, kupon kodları, hediye kartları ve Steam/Epic/GOG oyun keyleri tek kasada maskeli saklanır. Alınan, kullanılan ve arşivlenen kayıtlar aynı düzende takip edilir.
+                Vultkey, dijital key karmaşasını sadeleştirmek için tasarlandı. Oyun kodlarını, lisansları ve kuponları tek kasada maskeli tutarsın; hangi kaydın aktif, kullanılmış ya da arşivde olduğunu net biçimde görürsün.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <PrimaryCta email={email} />

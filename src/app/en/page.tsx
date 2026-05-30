@@ -213,13 +213,13 @@ function HeaderActions({ email }: { email: string | null }) {
     <div className="flex items-center gap-2">
       <ThemeToggle className="size-9 border border-border/80 bg-background/55 text-muted-foreground hover:border-primary/25 hover:bg-primary/10 hover:text-primary" />
       <Button asChild variant="outline" className="hidden h-9 border-border/80 bg-background/55 px-3 text-foreground/85 hover:border-primary/25 hover:bg-primary/10 hover:text-primary sm:inline-flex">
-        <Link href="/login">
+        <Link href="/en/login">
           <LogIn className="size-4" />
           Sign in
         </Link>
       </Button>
       <Button asChild variant="outline" className="h-9 border-primary/35 bg-primary/15 px-3.5 text-primary shadow-none hover:border-primary/55 hover:bg-primary/22 hover:text-primary">
-        <Link href="/signup">
+        <Link href="/en/signup">
           <KeyRound className="size-4" />
           <span className="sm:hidden">Start</span>
           <span className="hidden sm:inline">Create vault</span>
@@ -232,7 +232,7 @@ function HeaderActions({ email }: { email: string | null }) {
 function PrimaryCta({ email, className }: { email: string | null; className?: string }) {
   return (
     <Button asChild size="lg" className={className}>
-      <Link href={email ? "/dashboard" : "/signup"}>
+      <Link href={email ? "/dashboard" : "/en/signup"}>
         {email ? "Open vault" : "Create vault"}
         <ArrowRight className="size-4" />
       </Link>
@@ -458,14 +458,14 @@ export default async function EnglishHomePage() {
               </h2>
               <div className="flex flex-col justify-center gap-3 sm:flex-row">
                 <Button asChild size="lg" className="h-12 px-6 text-base">
-                  <Link href={email ? "/dashboard" : "/signup"}>
+                  <Link href={email ? "/dashboard" : "/en/signup"}>
                     <KeyRound className="size-5" />
                     {email ? "Open vault" : "Add your first key"}
                   </Link>
                 </Button>
                 {!email ? (
                   <Button asChild variant="outline" size="lg" className="h-12 px-6 text-base">
-                    <Link href="/login">
+                    <Link href="/en/login">
                       <LockKeyhole className="size-5" />
                       Sign in
                     </Link>

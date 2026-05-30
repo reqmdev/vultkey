@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function SignupPage() {
   return (
     <AuthCard title="Kasanı oluştur" description="Dijital keylerini maskeli saklamak ve düzenli paylaşmak için hesabını aç.">
-      <SignupForm />
+      <SignupForm locale="tr" />
     </AuthCard>
   );
 }

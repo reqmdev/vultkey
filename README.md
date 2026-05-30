@@ -37,6 +37,7 @@ https://github.com/reqmdev/vultkey
 - Tek kullanımlık veya sınırlı erişimli public linklerle kod paylaşmak.
 - Self-host edilebilir, denetlenebilir ve açık kaynaklı bir dijital key kasası kullanmak.
 
+
 ## Durum
 
 Vultkey beta aşamasındadır. Ürün; güvenli saklama, düzenli envanter, kontrollü paylaşım ve açık kaynak denetlenebilirlik üzerine odaklanır.

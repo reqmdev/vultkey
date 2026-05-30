@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { AuthLocale } from "@/components/auth/auth-shell";
 
 type BotAction = "login" | "signup" | "forgot_password";
 
@@ -146,12 +147,12 @@ export function BotProtection({ action, resetSignal, onTurnstileTokenChange }: {
   );
 }
 
-export function RecaptchaNotice() {
+export function RecaptchaNotice({ locale = "tr" }: { locale?: AuthLocale }) {
   if (!recaptchaSiteKey) return null;
 
   return (
     <p className="border-t border-border/70 pt-4 text-center text-[11px] leading-5 text-muted-foreground">
-      Bu form, otomatik denemeleri azaltmak için Google reCAPTCHA v3 ile korunur.
+      {locale === "en" ? "This form is protected by Google reCAPTCHA v3 to reduce automated attempts." : "Bu form, otomatik denemeleri azaltmak için Google reCAPTCHA v3 ile korunur."}
     </p>
   );
 }
